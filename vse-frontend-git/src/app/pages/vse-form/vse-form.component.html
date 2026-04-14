@@ -1,0 +1,26 @@
+<mat-card class="form-card">
+  <mat-card-title>VSE Annual Submission</mat-card-title>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Employee ID</mat-label>
+    <input matInput [(ngModel)]="vse.employeeId">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Goals Achieved</mat-label>
+    <textarea matInput [(ngModel)]="vse.goalsAchieved"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Self Rating</mat-label>
+    <input matInput [(ngModel)]="vse.selfRating">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="submit()">
+    Submit
+  </button>
+
+  <button mat-button (click)="router.navigate(['/dashboard'])">
+    ← Back to Dashboard
+  </button>
+</mat-card>

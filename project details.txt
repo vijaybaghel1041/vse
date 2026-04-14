@@ -1,0 +1,38 @@
+Now Correct menu for role 
+ADMIN → Dashboard of admin, Submissions report(grid) from member(only Approe or reject from Submission from member)
+MEMBER → Dashboard for member, Annual Submission menu + add auditor button to add 3rd party auditor
+AUDITOR → Dashboard for Auditor, Audit menu,new report,grid of submissionfrom auditor side
+
+flow like this
+Admin -->enable member-->Member-->create auditor for audit-->auditor--create report-->Member-->Check report and update from his side same file which upload by auditor---> then Admin -->Approve R
+
+--------------------------
+If you reply:
+
+👉 3C.5
+
+I will:
+
+Implement JWT Refresh Token (Backend + Frontend)
+
+Explain Access Token vs Refresh Token
+
+Draw JWT filter flow (Interview GOLD)
+
+Add auto refresh interceptor
+pages/
+ ├── dashboard/
+ │
+ ├── member/
+ │   ├── annual-submission/
+ │   └── assign-auditor/
+ │
+ ├── system-audit/
+ │   ├── audit-submission-dashboard/
+ │   └── audit-report-form/
+ │
+ └── admin/
+     └── submission-report/
+WHY THIS IS THE RIGHT CALL (Say this in interview)
+
+“We use a single System Audit Submission Dashboard with role-based actions instead of separate dashboards. This avoids duplication, keeps data consistent, and simplifies authorization.”

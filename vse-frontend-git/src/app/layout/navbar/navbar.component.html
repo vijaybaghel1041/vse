@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="toggleSidebar.emit()">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span class="title">VSE</span>
+  <span class="spacer"></span>
+
+  <!-- <button mat-button routerLink="/dashboard">Dashboard</button> -->
+  <!-- <button mat-button routerLink="/annual-submission">Submissions</button> -->
+
+  <button mat-raised-button color="warn" (click)="logout()">Logout</button>
+</mat-toolbar>

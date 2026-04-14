@@ -1,0 +1,12 @@
+.layout {
+  display: flex;
+  height: calc(100vh - 64px); /* header height */
+}
+
+/* Main content area */
+.content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background-color: #f5f7fa;
+}

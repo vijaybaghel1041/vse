@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: vse-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vse_db
+    ports:
+      - "3308:3306" # Mapped to 3308 to prevent clashing with your native DB
+    volumes:
+      - vse_db_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./vse-backend-git
+    container_name: vse-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/vse_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./vse-frontend-git
+    container_name: vse-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  vse_db_data:

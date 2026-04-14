@@ -1,0 +1,84 @@
+<aside class="sidebar" [class.closed]="!opened">
+  <mat-nav-list>
+    <!-- COMMON -->
+    <!-- DASHBOARD + ROLE -->
+    <a mat-list-item routerLink="/dashboard" class="dashboard-item">
+      <span>Dashboard</span>
+
+      @if (role) {
+        <span class="role-badge {{ role.toLowerCase() }}">
+          {{ role }}
+        </span>
+      }
+    </a>
+
+    <!-- ================= ADMIN ================= -->
+    @if (role === 'ADMIN') {
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          Submissions
+        </mat-expansion-panel-header>
+
+        <a mat-list-item routerLink="/submission-report">
+          Member Submissions
+        </a>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          System Audit
+        </mat-expansion-panel-header>
+
+        <a mat-list-item routerLink="/members">
+          Members Enable
+        </a>
+
+        <a mat-list-item routerLink="/auditors">
+          Submission Report
+        </a>
+      </mat-expansion-panel>
+
+    }
+
+    <!-- ================= MEMBER ================= -->
+    @if (role === 'MEMBER') {
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          System Audit Submission
+        </mat-expansion-panel-header>
+
+        <a mat-list-item routerLink="/assign-auditor">
+          Add Auditor
+        </a>
+
+        <a mat-list-item routerLink="/annual-submission">
+          Annual Submission
+        </a>
+
+      </mat-expansion-panel>
+
+    }
+
+    <!-- ================= AUDITOR ================= -->
+    @if (role === 'AUDITOR') {
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          System Audit Report
+        </mat-expansion-panel-header>
+
+        <a mat-list-item routerLink="/audit-report">
+          New Audit Report
+        </a>
+
+        <a mat-list-item routerLink="/audit-dashboard">
+          Audit Dashboard
+        </a>
+
+      </mat-expansion-panel>
+
+    }
+  </mat-nav-list>
+</aside>

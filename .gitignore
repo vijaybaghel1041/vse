@@ -1,0 +1,32 @@
+# Dependency directories
+node_modules/
+target/
+bin/
+.angular/
+
+# IDE files
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.idea/
+
+# Environment files
+.env
+.env.local
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+dist/
+build/
+*.jar
+*.war
