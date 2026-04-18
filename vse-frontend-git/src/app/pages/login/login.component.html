@@ -1,24 +1,41 @@
-<div class="glass-card">
-  <div class="card-header">
-    <h2 class="title">Welcome Back</h2>
-    <p class="subtitle">Please enter your details to sign in</p>
+<div class="burj-bg min-h-screen flex items-center justify-center p-6">
+  
+  <div class="max-w-xl w-full glass-container p-12 relative overflow-hidden">
+    <!-- Accent glow -->
+    <div class="absolute -top-32 -left-32 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+    
+    <div class="relative z-10">
+      <div class="text-center mb-12">
+        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+          <span class="text-black text-3xl font-bold">V</span>
+        </div>
+        <h2 class="text-4xl font-bold mb-3">Welcome Back</h2>
+        <p class="text-gray-400 text-lg">Enter your credentials to access the Burj VSE Network</p>
+      </div>
+
+      <form (ngSubmit)="login()" class="space-y-6">
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-300 ml-1">Username</label>
+          <input type="text" [(ngModel)]="username" name="username" class="vse-input text-lg" placeholder="e.g. admin" required>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-300 ml-1">Password</label>
+          <input type="password" [(ngModel)]="password" name="password" class="vse-input text-lg" placeholder="••••••••" required>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit" class="w-full bg-white text-black py-4 rounded-xl font-bold text-xl hover:scale-[1.02] transition-transform shadow-xl">
+            Sign In
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-8 text-center text-gray-400">
+        Don't have an account? 
+        <a routerLink="/signup" class="text-white font-bold hover:underline ml-1">Create one here</a>
+      </div>
+    </div>
   </div>
 
-  <form class="glass-form">
-    <div class="input-group">
-      <label>Username</label>
-      <input type="text" [(ngModel)]="username" name="username" placeholder="Enter your username">
-    </div>
-
-    <div class="input-group">
-      <label>Password</label>
-      <input type="password" [(ngModel)]="password" name="password" placeholder="Enter your password">
-    </div>
-
-    <button type="button" class="btn-primary" (click)="login()">Sign in</button>
-  </form>
-
-  <div class="card-footer">
-    <p>Don't have an account? <a routerLink="/signup" class="text-primary hover-underline">Sign up</a></p>
-  </div>
 </div>

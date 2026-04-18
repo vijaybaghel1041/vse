@@ -1,46 +1,58 @@
-<div class="glass-card">
-  <div class="card-header">
-    <h2 class="title">Create Account</h2>
-    <p class="subtitle">Join us and start your journey</p>
+<div class="burj-bg min-h-screen flex items-center justify-center p-6">
+  
+  <div class="max-w-2xl w-full glass-container p-12 relative overflow-hidden">
+    <!-- Accent glow -->
+    <div class="absolute -top-32 -right-32 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+    
+    <div class="relative z-10">
+      <div class="text-center mb-10">
+        <h2 class="text-4xl font-bold mb-3">Begin Your Journey</h2>
+        <p class="text-gray-400 text-lg">Join the world's most elite trading network</p>
+      </div>
+
+      <form (ngSubmit)="register()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-400">Username *</label>
+          <input type="text" [(ngModel)]="username" name="username" class="vse-input" placeholder="Choose a handle" required>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-400">Email Address *</label>
+          <input type="email" [(ngModel)]="email" name="email" class="vse-input" placeholder="name@company.com" required>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-400">Phone Number *</label>
+          <input type="tel" [(ngModel)]="phone" name="phone" class="vse-input" placeholder="10-digit number" required>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-400">Security Password *</label>
+          <input type="password" [(ngModel)]="password" name="password" class="vse-input" placeholder="Min 6 characters" required minlength="6">
+        </div>
+
+        <div class="md:col-span-2 space-y-2">
+          <label class="text-sm font-medium text-gray-400">Account Type (Elite Level)*</label>
+          <select [(ngModel)]="role" name="role" class="vse-input bg-black/40" required>
+            <option value="MEMBER">Member (Standard Simulation)</option>
+            <option value="ADMIN" class="text-orange-500">Admin (System Access)</option>
+            <option value="AUDITOR" class="text-green-500">Auditor (Compliance Master)</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2 pt-4">
+          <button type="submit" class="w-full bg-white text-black py-4 rounded-xl font-bold text-xl hover:scale-[1.01] transition-transform shadow-2xl">
+            Create Premium Account
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-8 text-center text-gray-400 text-sm">
+        By joining, you agree to our <span class="text-white hover:underline cursor-pointer">Terms of Service</span>.
+        Already have access? <a routerLink="/login" class="text-white font-bold hover:underline ml-1">Log in</a>
+      </div>
+    </div>
   </div>
 
-  <form class="glass-form" #signupForm="ngForm">
-    <div class="input-group">
-      <label>Email <span class="required-star">*</span></label>
-      <input type="email" [(ngModel)]="email" name="email" placeholder="Enter your email" required email #emailField="ngModel">
-      @if (emailField.invalid && (emailField.dirty || emailField.touched)) {
-        <span class="error-msg">Valid email is required.</span>
-      }
-    </div>
-
-    <div class="input-group">
-      <label>Username <span class="required-star">*</span></label>
-      <input type="text" [(ngModel)]="username" name="username" placeholder="Choose a username" required minlength="3" #userField="ngModel">
-      @if (userField.invalid && (userField.dirty || userField.touched)) {
-        <span class="error-msg">Username (min 3 chars) is required.</span>
-      }
-    </div>
-
-    <div class="input-group">
-      <label>Phone Number <span class="required-star">*</span></label>
-      <input type="tel" [(ngModel)]="phone" name="phone" placeholder="Enter your phone number" required pattern="^[0-9]{10}$" #phoneField="ngModel">
-      @if (phoneField.invalid && (phoneField.dirty || phoneField.touched)) {
-        <span class="error-msg">10-digit phone number is required.</span>
-      }
-    </div>
-
-    <div class="input-group">
-      <label>Password <span class="required-star">*</span></label>
-      <input type="password" [(ngModel)]="password" name="password" placeholder="Create a password" required minlength="6" #passField="ngModel">
-      @if (passField.invalid && (passField.dirty || passField.touched)) {
-        <span class="error-msg">Password (min 6 chars) is required.</span>
-      }
-    </div>
-
-    <button type="button" class="btn-primary" [disabled]="signupForm.invalid" (click)="register()">Sign up</button>
-  </form>
-
-  <div class="card-footer">
-    <p>Already have an account? <a routerLink="/login" class="text-primary hover-underline">Sign in</a></p>
-  </div>
 </div>

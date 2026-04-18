@@ -1,1 +1,71 @@
-<p>annual-submission works!</p>
+<div class="burj-bg min-h-screen p-8">
+  <div class="max-w-5xl mx-auto space-y-12">
+    
+    <!-- Premium Header -->
+    <header class="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-white/10 pb-12">
+      <div class="text-center md:text-left">
+        <h1 class="text-5xl font-bold tracking-tight text-white mb-2">My Portfolio</h1>
+        <p class="text-gray-400 text-xl font-light">Excellence in every submission.</p>
+      </div>
+      <div class="flex gap-4">
+        <div class="glass-container glass-member px-8 py-4 text-center">
+          <p class="text-gray-500 text-xs uppercase mb-1">Status</p>
+          <p class="font-bold text-white">ACTIVE MEMBER</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Submission Form Card -->
+    <div class="glass-container glass-member p-12 shadow-2xl relative">
+      <!-- Burj accent icon -->
+      <div class="absolute top-8 right-8 w-12 h-12 opacity-20">
+        <svg fill="white" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29L5.21 21L12 18L18.79 21L19.5 20.29L12 2Z"/></svg>
+      </div>
+
+      <div class="flex items-center gap-6 mb-12">
+        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center">
+          <span class="text-black text-3xl">📝</span>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold">Annual Submission</h2>
+          <p class="text-gray-400 text-lg">Detailed performance & goal synchronization</p>
+        </div>
+      </div>
+
+      <form class="space-y-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-3">
+            <label class="text-sm font-medium text-gray-400 ml-1 uppercase tracking-widest">Self Rating</label>
+            <select class="vse-input bg-white/5 border-white/10 py-5">
+              <option>Outstanding - Pinnacle of Performance</option>
+              <option>Exceeds Expectations</option>
+              <option>Meets Expectations</option>
+            </select>
+          </div>
+          <div class="space-y-3">
+            <label class="text-sm font-medium text-gray-400 ml-1 uppercase tracking-widest">Fiscal Year</label>
+            <input type="number" class="vse-input bg-white/5 border-white/10 py-5" value="2024">
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <label class="text-sm font-medium text-gray-400 ml-1 uppercase tracking-widest">Key Accomplishments</label>
+          <textarea class="vse-input bg-white/5 border-white/10 h-40 resize-none p-5" placeholder="Highlight your elite contributions this year..."></textarea>
+        </div>
+
+        <div class="pt-6">
+          <button class="w-full bg-white text-black py-5 rounded-2xl font-bold text-2xl hover:scale-[1.01] transition-transform shadow-2xl flex items-center justify-center gap-3">
+            <span>Submit Annual Report</span>
+            <span class="text-sm opacity-50 font-normal mt-1">VSE-M-SECURE</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Quick Feedback -->
+    <div class="text-center p-8 glass-container glass-member border-dashed border-white/20">
+      <p class="text-gray-400 italic">"Your submissions are directly reviewed from the Burj Khalifa Executive Center."</p>
+    </div>
+
+  </div>
+</div>

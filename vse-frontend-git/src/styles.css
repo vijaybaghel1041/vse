@@ -1,67 +1,102 @@
-/* You can add global styles to this file, and also import other style files */
-@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary: #6d28d9;
-  --primary-hover: #5b21b6;
-  --bg-gradient-start: #1e1b4b;
-  --bg-gradient-end: #312e81;
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --text-light: #f8fafc;
-  --text-muted: #cbd5e1;
+  --primary-admin: #FF9933;
+  --primary-auditor: #2ECC71;
+  --primary-member: #FFFFFF;
+  --bg-dark: #0f172a;
 }
 
-html,
 body {
-  height: 100%;
   margin: 0;
-}
-
-body {
   font-family: 'Outfit', sans-serif;
-  background-color: #f5f7fa;
-}
-
-/* Global Auth wrapper background for auth screens */
-.auth-wrapper {
+  background-color: var(--bg-dark);
+  color: white;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
+  overflow-x: hidden;
 }
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* --- Premium Backgrounds --- */
+.burj-bg {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('/assets/images/burj_khalifa_premium_office.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
-/* Global Form Validation Styles */
-.required-star {
-  color: #fb7185;
-  margin-left: 2px;
+/* --- Glassmorphism Core --- */
+.glass-container {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.error-msg {
-  color: #fb7185;
-  font-size: 0.75rem;
-  margin-top: 4px;
-  display: block;
+/* --- Admin Saffron Glass --- */
+.glass-admin {
+  background: rgba(255, 153, 51, 0.05);
+  border: 1px solid rgba(255, 153, 51, 0.2);
+  box-shadow: 0 0 40px rgba(255, 153, 51, 0.1);
+}
+.text-admin { color: var(--primary-admin); }
+.btn-admin {
+  background: linear-gradient(135deg, #FF9933, #FFB366);
+  color: #000;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}
+.btn-admin:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 153, 51, 0.3); }
+
+/* --- Auditor Green Glass --- */
+.glass-auditor {
+  background: rgba(46, 204, 113, 0.05);
+  border: 1px solid rgba(46, 204, 113, 0.2);
+  box-shadow: 0 0 40px rgba(46, 204, 113, 0.1);
+}
+.text-auditor { color: var(--primary-auditor); }
+.btn-auditor {
+  background: linear-gradient(135deg, #2ECC71, #58D68D);
+  color: #000;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}
+.btn-auditor:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3); }
+
+/* --- Member White Glass --- */
+.glass-member {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.text-member { color: #fff; }
+.btn-member {
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 12px 24px;
 }
 
-input.ng-invalid.ng-touched {
-  border-color: rgba(251, 113, 133, 0.5) !important;
-  background-color: rgba(251, 113, 133, 0.05) !important;
+/* --- Common UI --- */
+.vse-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+  color: white;
+  width: 100%;
+  transition: border 0.3s ease;
 }
+.vse-input:focus { border-color: rgba(255,255,255,0.4); outline: none; }
 
-button[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed !important;
-  filter: grayscale(1);
-}
-
+.vse-nav { @apply sticky top-0 z-50 py-4 px-8 flex justify-between items-center backdrop-blur-md border-b border-white/10 bg-black/20; }
+.vse-nav-link { @apply text-gray-300 hover:text-white transition-colors duration-300 font-medium; }

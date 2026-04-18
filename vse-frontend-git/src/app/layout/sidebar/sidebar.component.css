@@ -1,13 +1,57 @@
 .sidebar {
-  width: 260px;
+  width: 250px;
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
   height: 100%;
-  background: #ffffff;
-  border-right: 1px solid #e0e0e0;
-  overflow-y: auto;
+  transition: width 0.3s;
+  overflow-x: hidden;
 }
-
 
 .sidebar.closed {
   width: 0;
-  overflow: hidden;
+  border: none;
+}
+
+/* Expansion Panel override */
+mat-expansion-panel {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+mat-expansion-panel-header {
+  font-weight: bold;
+}
+
+/* Role Badges */
+.role-badge {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  font-weight: 700;
+  color: white;
+}
+
+.admin {
+  background-color: #dc3545;
+}
+
+.member {
+  background-color: #198754;
+}
+
+.auditor {
+  background-color: #0d6efd;
+}
+
+.dashboard-item {
+  font-weight: 900;
+}
+
+a.mat-list-item {
+  color: #333 !important;
+}
+
+a.mat-list-item:hover {
+  background-color: #f0f0f0;
 }

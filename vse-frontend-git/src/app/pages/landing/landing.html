@@ -1,49 +1,82 @@
-<div class="landing-page">
-  <nav class="navbar">
-    <div class="logo">
-      <span class="vse-text">VSE</span>
+<div class="burj-bg min-h-screen flex flex-all flex-col">
+  
+  <nav class="vse-nav">
+    <div class="flex items-center gap-2">
+      <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
+        <span class="text-white font-bold text-xl">V</span>
+      </div>
+      <span class="text-2xl font-bold tracking-tight">VSE <span class="text-gray-400 font-light text-sm italic">Premium</span></span>
     </div>
-    <div class="nav-buttons">
-      <button class="nav-btn login-btn" routerLink="/login">Login</button>
-      <button class="nav-btn signup-btn" routerLink="/signup">Sign Up</button>
+    <div class="flex gap-8 items-center">
+      <a routerLink="/" class="vse-nav-link">Home</a>
+      <a routerLink="/login" class="vse-nav-link border border-white/20 px-6 py-2 rounded-full hover:bg-white/5">Login</a>
+      <a routerLink="/signup" class="bg-white text-black px-8 py-2 rounded-full font-bold hover:bg-gray-200 transition-all">Sign Up</a>
     </div>
   </nav>
 
-  <main class="hero-section">
-    <div class="hero-content">
-      <h1 class="hero-title">Experience the Market with <span class="highlight">VSE</span></h1>
-      <p class="hero-subtitle">
-        Your premier destination for virtual stock trading. We provide a state-of-the-art simulation 
-        modeled after top exchanges like the NSE, empowering you to sharpen your trading skills with real-time market data.
-      </p>
+  <main class="flex-grow flex items-center justify-center px-4 py-20">
+    <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       
-      <div class="hero-stats">
-        <div class="stat-card">
-          <div class="stat-value">5M+</div>
-          <div class="stat-label">Virtual Traders</div>
+      <!-- Hero Content -->
+      <div class="space-y-8">
+        <div class="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-sm font-medium tracking-wide">
+          ✨ TRUSTED BY 10,000+ TRADERS WORLDWIDE
         </div>
-        <div class="stat-card">
-          <div class="stat-value">Real-time</div>
-          <div class="stat-label">Market Data</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">Zero Risk</div>
-          <div class="stat-label">100% Simulation</div>
+        <h1 class="text-5xl lg:text-7xl font-bold leading-tight">
+          Navigate the Markets with <br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-gray-600">Pure Precision.</span>
+        </h1>
+        <p class="text-xl text-gray-400 max-w-lg leading-relaxed">
+          Experience the pinnacle of virtual trading simulation from the highest perspectives. Premium tools, authentic data, and seamless execution.
+        </p>
+        <div class="flex gap-4 pt-4">
+          <button routerLink="/signup" class="bg-white text-black px-10 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform">Start Trading Now</button>
+          <button class="bg-white/5 backdrop-blur-md border border-white/10 px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all">View Demo</button>
         </div>
       </div>
 
-      <button class="cta-btn" routerLink="/market-qa">Start Trading Today</button>
-    </div>
+      <!-- Glass Performance Card -->
+      <div class="glass-container p-8 relative overflow-hidden group">
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
+        
+        <div class="flex justify-between items-start mb-12">
+          <div>
+            <h3 class="text-2xl font-bold">Global Performance</h3>
+            <p class="text-gray-400">Monthly Growth Index</p>
+          </div>
+          <div class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-lg text-sm font-bold border border-emerald-500/20">
+            +24.8%
+          </div>
+        </div>
 
-    <div class="hero-graphic">
-      <div class="glass-orb orb-1"></div>
-      <div class="glass-orb orb-2"></div>
-      <div class="chart-mockup">
-        <div class="chart-line"></div>
-        <div class="chart-point p1"></div>
-        <div class="chart-point p2"></div>
-        <div class="chart-point p3"></div>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="p-6 bg-white/5 rounded-2xl border border-white/5">
+            <p class="text-gray-500 text-sm uppercase tracking-wider mb-2">Total Volume</p>
+            <p class="text-3xl font-bold">$12.4M</p>
+          </div>
+          <div class="p-6 bg-white/5 rounded-2xl border border-white/5">
+            <p class="text-gray-500 text-sm uppercase tracking-wider mb-2">Active Users</p>
+            <p class="text-3xl font-bold">8.2k</p>
+          </div>
+        </div>
+
+        <div class="mt-8 p-6 bg-gradient-to-br from-white/10 to-transparent rounded-2xl border border-white/10">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <span class="text-black text-xl font-bold">↑</span>
+            </div>
+            <div>
+              <p class="font-bold text-lg">Market Sentiment</p>
+              <p class="text-gray-400 text-sm">Real-time authentic data from Burj HQ</p>
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
   </main>
+
+  <footer class="p-8 border-t border-white/10 text-center text-gray-500 text-sm">
+    &copy; 2026 Virtual Stock Exchange. All Rights Reserved. Burj Khalifa Premium Edition.
+  </footer>
 </div>
