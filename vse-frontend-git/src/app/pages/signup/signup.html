@@ -4,28 +4,40 @@
     <p class="subtitle">Join us and start your journey</p>
   </div>
 
-  <form class="glass-form">
+  <form class="glass-form" #signupForm="ngForm">
     <div class="input-group">
-      <label>Email</label>
-      <input type="email" [(ngModel)]="email" name="email" placeholder="Enter your email">
+      <label>Email <span class="required-star">*</span></label>
+      <input type="email" [(ngModel)]="email" name="email" placeholder="Enter your email" required email #emailField="ngModel">
+      @if (emailField.invalid && (emailField.dirty || emailField.touched)) {
+        <span class="error-msg">Valid email is required.</span>
+      }
     </div>
 
     <div class="input-group">
-      <label>Username</label>
-      <input type="text" [(ngModel)]="username" name="username" placeholder="Choose a username">
+      <label>Username <span class="required-star">*</span></label>
+      <input type="text" [(ngModel)]="username" name="username" placeholder="Choose a username" required minlength="3" #userField="ngModel">
+      @if (userField.invalid && (userField.dirty || userField.touched)) {
+        <span class="error-msg">Username (min 3 chars) is required.</span>
+      }
     </div>
 
     <div class="input-group">
-      <label>Phone Number</label>
-      <input type="tel" [(ngModel)]="phone" name="phone" placeholder="Enter your phone number">
+      <label>Phone Number <span class="required-star">*</span></label>
+      <input type="tel" [(ngModel)]="phone" name="phone" placeholder="Enter your phone number" required pattern="^[0-9]{10}$" #phoneField="ngModel">
+      @if (phoneField.invalid && (phoneField.dirty || phoneField.touched)) {
+        <span class="error-msg">10-digit phone number is required.</span>
+      }
     </div>
 
     <div class="input-group">
-      <label>Password</label>
-      <input type="password" [(ngModel)]="password" name="password" placeholder="Create a password">
+      <label>Password <span class="required-star">*</span></label>
+      <input type="password" [(ngModel)]="password" name="password" placeholder="Create a password" required minlength="6" #passField="ngModel">
+      @if (passField.invalid && (passField.dirty || passField.touched)) {
+        <span class="error-msg">Password (min 6 chars) is required.</span>
+      }
     </div>
 
-    <button type="button" class="btn-primary" (click)="register()">Sign up</button>
+    <button type="button" class="btn-primary" [disabled]="signupForm.invalid" (click)="register()">Sign up</button>
   </form>
 
   <div class="card-footer">

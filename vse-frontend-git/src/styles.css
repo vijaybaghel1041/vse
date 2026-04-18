@@ -39,4 +39,29 @@ body {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-}
+}
+
+/* Global Form Validation Styles */
+.required-star {
+  color: #fb7185;
+  margin-left: 2px;
+}
+
+.error-msg {
+  color: #fb7185;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  display: block;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: rgba(251, 113, 133, 0.5) !important;
+  background-color: rgba(251, 113, 133, 0.05) !important;
+}
+
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  filter: grayscale(1);
+}
+

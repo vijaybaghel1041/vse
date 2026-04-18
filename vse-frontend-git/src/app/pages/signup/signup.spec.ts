@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterModule } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule } from '@angular/forms';
 import { Signup } from './signup';
+import { AuthService } from '../../core/services/auth.service';
 
 describe('Signup', () => {
   let component: Signup;
@@ -8,13 +11,14 @@ describe('Signup', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Signup]
+      imports: [Signup, RouterModule.forRoot([]), HttpClientTestingModule, FormsModule],
+      providers: [AuthService]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(Signup);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

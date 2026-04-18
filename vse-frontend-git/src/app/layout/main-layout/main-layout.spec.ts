@@ -1,20 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterModule } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MainLayoutComponent } from './main-layout.component';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AuthService } from '../../core/services/auth.service';
 
-import { MainLayout } from './main-layout';
-
-describe('MainLayout', () => {
-  let component: MainLayout;
-  let fixture: ComponentFixture<MainLayout>;
+describe('MainLayoutComponent', () => {
+  let component: MainLayoutComponent;
+  let fixture: ComponentFixture<MainLayoutComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainLayout]
+      imports: [
+        MainLayoutComponent, 
+        NavbarComponent, 
+        SidebarComponent, 
+        RouterModule.forRoot([]),
+        HttpClientTestingModule
+      ],
+      providers: [AuthService]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MainLayout);
+    fixture = TestBed.createComponent(MainLayoutComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

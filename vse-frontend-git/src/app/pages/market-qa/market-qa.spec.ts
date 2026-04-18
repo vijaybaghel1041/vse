@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterModule } from '@angular/router';
 import { MarketQa } from './market-qa';
 
 describe('MarketQa', () => {
@@ -8,13 +8,13 @@ describe('MarketQa', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MarketQa]
+      imports: [MarketQa, RouterModule.forRoot([])]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(MarketQa);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
