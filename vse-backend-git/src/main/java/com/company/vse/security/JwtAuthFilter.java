@@ -3,6 +3,8 @@ package com.company.vse.security;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,25 +20,23 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
     private final JwtUtil jwtUtil;
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
-    /**
-     * This filter runs for EVERY request
-     * It:
-     * 1. Reads Authorization header
-     * 2. Extracts JWT token
-     * 3. Validates token
-     * 4. Sets Authentication in Spring Security context
-     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+        
+        logger.debug("FILTER: {} {}", method, path);
 
         // 🔑 Read Authorization header
         String authHeader = request.getHeader("Authorization");
@@ -57,10 +57,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // Extract username + role
             username = jwtUtil.extractUsername(token);
             role = jwtUtil.extractRole(token);
+            logger.debug("EXTRACTED FROM TOKEN: user={}, role={}", username, role);
         } catch (Exception e) {
-            // ✅ Silently catch ExpiredJwtException or invalid tokens.
-            // Protected paths will naturally return 401 Unauthorized since no authentication context is set.
-            // Public paths like /auth/refresh will perfectly succeed!
+            logger.warn("TOKEN EXTRACTION FAILED: {}", e.getMessage());
         }
 
         // 🔒 If token is valid and user not authenticated yet
@@ -72,7 +71,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
-                    // Collections.emptyList()
                     List.of(new SimpleGrantedAuthority("ROLE_" + role)));
 
             authentication.setDetails(
@@ -80,6 +78,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // ✅ VERY IMPORTANT: set authentication
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            logger.debug("CONTEXT AUTHENTICATED: {}", username);
         }
 
         filterChain.doFilter(request, response);
