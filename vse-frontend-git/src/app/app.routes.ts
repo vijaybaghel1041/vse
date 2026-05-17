@@ -14,6 +14,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { AuditorComponent } from './pages/auditor/auditor.component';
 import { AuditWorkflowComponent } from './pages/audit-workflow/audit-workflow';
 import { SubmissionReport } from './pages/admin/submission-report/submission-report';
+import { AppointAuditorComponent } from './pages/member/appoint-auditor/appoint-auditor';
 
 export const routes: Routes = [
 
@@ -48,6 +49,7 @@ export const routes: Routes = [
 
       // Member Routes
       { path: 'member/initiate',    component: AuditWorkflowComponent },
+      { path: 'member/appoint',     component: AppointAuditorComponent },
       { path: 'member/history',     component: AuditWorkflowComponent },
       { path: 'member-submissions', component: AuditWorkflowComponent },
 

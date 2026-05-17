@@ -2,6 +2,12 @@ package com.company.vse.controller;
 
 import com.company.vse.entity.AuditProcess;
 import com.company.vse.repository.AuditRepository;
+import com.company.vse.repository.UserRepository;
+import com.company.vse.repository.EnabledMemberRepository;
+import com.company.vse.entity.User;
+import com.company.vse.entity.EnabledMember;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +26,40 @@ public class AuditController {
     @Autowired
     private AuditRepository auditRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EnabledMemberRepository enabledMemberRepository;
+
     // STEP 1: Member initiates audit (Excel upload mock)
     @PostMapping("/initiate")
     public AuditProcess initiateAudit(@RequestBody Map<String, String> req) {
         String member = req.get("member");
         String auditor = req.get("auditor");
         String excelName = req.get("excelName");
+        // Validation: member must exist
+        User memberUser = userRepository.findByUsername(member).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST, "Member user not found: " + member));
+
+        // Validation: auditor must exist and have AUDITOR role
+        User auditorUser = userRepository.findByUsername(auditor).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST, "Auditor user not found: " + auditor));
+        if (auditorUser.getRole() == null || !auditorUser.getRole().equalsIgnoreCase("AUDITOR")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not an auditor: " + auditor);
+        }
+
+        // Validation: member must be enabled for this audit cycle (by email or memberCode)
+        boolean enabled = false;
+        if (memberUser.getEmail() != null) {
+            enabled = enabledMemberRepository.findByEmailId(memberUser.getEmail()).isPresent();
+        }
+        if (!enabled) {
+            enabled = enabledMemberRepository.findByMemberCode(memberUser.getUsername()).isPresent();
+        }
+        if (!enabled) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Member is not enabled for audit: " + member);
+        }
 
         AuditProcess audit = new AuditProcess();
         audit.setMemberUsername(member);

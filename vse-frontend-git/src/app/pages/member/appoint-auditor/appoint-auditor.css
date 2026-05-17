@@ -1,0 +1,6 @@
+.page-wrap { padding: 18px; }
+.form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; align-items:start; }
+.form-grid .full-span { grid-column: 1 / -1; }
+.info { padding:8px; background: rgba(255,255,255,0.03); border-radius:6px; }
+.empty-state { padding:18px; color: #fca5a5 }
+.btn-primary { background: linear-gradient(90deg,#06b6d4,#3b82f6); color:white; padding:8px 14px; border-radius:6px; border:none }

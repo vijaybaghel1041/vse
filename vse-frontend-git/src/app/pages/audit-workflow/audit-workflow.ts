@@ -92,7 +92,10 @@ export class AuditWorkflowComponent implements OnInit {
           this.auditDescription = '';
           this.loadAudits();
         },
-        error: () => alert('Failed to initiate audit. Please try again.')
+        error: (err: any) => {
+          const msg = err?.error?.message || err?.error || err?.message || 'Failed to initiate audit. Please try again.';
+          alert('❌ ' + msg);
+        }
       });
   }
 
