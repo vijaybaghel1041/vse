@@ -12,7 +12,7 @@ public class EnabledMember {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 5)
+    @Column(length = 50)
     private String memberCode;
 
     private String auditPeriod;

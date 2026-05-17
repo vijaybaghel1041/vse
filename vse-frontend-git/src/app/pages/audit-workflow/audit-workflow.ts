@@ -85,7 +85,7 @@ export class AuditWorkflowComponent implements OnInit {
     this.auditService.initiate(this.username!, this.assignedAuditor, this.excelFileName, this.auditDescription)
       .subscribe({
         next: () => {
-          alert('✅ Audit initiated successfully!');
+          setTimeout(() => alert('✅ Audit initiated successfully!'), 0);
           this.showInitiateForm = false;
           this.assignedAuditor = '';
           this.excelFileName = '';
@@ -101,7 +101,7 @@ export class AuditWorkflowComponent implements OnInit {
     this.auditService.submitMemberResponse(this.selectedAudit.id, this.memberComment)
       .subscribe({
         next: () => {
-          alert('✅ Response submitted to Admin for approval!');
+          setTimeout(() => alert('✅ Response submitted to Admin for approval!'), 0);
           this.selectedAudit = null;
           this.memberComment = '';
           this.loadAudits();
@@ -117,7 +117,7 @@ export class AuditWorkflowComponent implements OnInit {
     this.auditService.adminDecision(this.selectedAudit.id, decision, this.adminComments)
       .subscribe({
         next: () => {
-          alert(`✅ Audit ${decision} by Administrative Board`);
+          setTimeout(() => alert(`✅ Audit ${decision} by Administrative Board`), 0);
           this.selectedAudit = null;
           this.adminComments = '';
           this.loadAudits();

@@ -28,7 +28,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configure(http)) // Enable CORS
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Allow Login/Register
-                .requestMatchers("/api/audit/**").permitAll() // Temporarily allow for dev testing
+                .requestMatchers("/api/audit/**", "/api/admin/members/**").permitAll() // Dev testing
                 .requestMatchers("/actuator/**", "/api/demo-metrics/**", "/api/cache-demo/**").permitAll() // Allow monitoring endpoints
                 .anyRequest().authenticated()
             )

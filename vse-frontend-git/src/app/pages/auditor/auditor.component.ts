@@ -63,7 +63,7 @@ export class AuditorComponent implements OnInit {
     if (!this.selectedAudit?.id || !this.auditorComment) return;
     this.auditService.submitAuditorReport(this.selectedAudit.id, this.reportFileName || 'verbal_report').subscribe({
       next: () => {
-        alert('✅ Audit report submitted successfully!');
+        setTimeout(() => alert('✅ Audit report submitted successfully!'), 0);
         this.selectedAudit = null;
         this.loadAudits();
       },

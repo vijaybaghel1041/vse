@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditService } from '../../../core/services/audit.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-submission-report',
@@ -98,16 +99,17 @@ export class SubmissionReport implements OnInit {
     }
     this.uploading = true;
     const payload = [{ memberCode: this.manualMemberCode, auditPeriod: this.manualPeriod, emailId: this.manualEmail }];
-    this.auditService.enableMembers(payload).subscribe({
-      next: (res) => {
-        this.uploading = false;
+    this.auditService.enableMembers(payload).pipe(
+      finalize(() => { this.uploading = false; })
+    ).subscribe({
+      next: () => {
         this.manualMemberCode = '';
         this.manualPeriod = '';
         this.manualEmail = '';
-        alert('✅ Member enabled successfully!');
         this.loadMembers();
+        setTimeout(() => alert('✅ Member enabled successfully!'), 0);
       },
-      error: () => { this.uploading = false; alert('Failed to save. Please try again.'); }
+      error: () => alert('Failed to save. Please try again.')
     });
   }
 

@@ -44,7 +44,7 @@ public class AuditController {
         String reportName = req.get("reportName");
         
         audit.setAuditorReportFile(reportName);
-        audit.setStatus("PENDING_MEMBER_REVIEW");
+        audit.setStatus("AUDITOR_REPORTED");
         
         logger.info("AUDITOR SUBMISSION: Report {} added to Audit ID {}", reportName, auditId);
         return auditRepository.save(audit);
@@ -57,7 +57,7 @@ public class AuditController {
         String responseFile = req.get("responseFile");
         
         audit.setMemberFinalResponseFile(responseFile);
-        audit.setStatus("PENDING_ADMIN");
+        audit.setStatus("MEMBER_RESPONDED");
         
         logger.info("MEMBER RESPONSE: Final file {} submitted for Admin review in Audit ID {}", responseFile, auditId);
         return auditRepository.save(audit);

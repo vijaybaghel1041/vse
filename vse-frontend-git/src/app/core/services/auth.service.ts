@@ -21,6 +21,7 @@ export class AuthService {
         tap(response => {
           localStorage.setItem('accessToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
+          localStorage.setItem('username', username);
         })
       );
   }
@@ -43,6 +44,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('username');
   }
 
   getUserRole(): string | null {
