@@ -1,69 +1,196 @@
-<div class="burj-bg min-h-screen p-8">
-  <div class="max-w-7xl mx-auto space-y-10">
-    
-    <!-- Premium Header -->
-    <header class="flex justify-between items-end border-b border-admin-saffron/20 pb-8">
-      <div>
-        <h1 class="text-4xl font-bold tracking-tight text-admin-saffron">Admin Executive Suite</h1>
-        <p class="text-gray-400 mt-2 text-lg italic">Master Analysis & Submission Controls</p>
-      </div>
-      <div class="glass-container glass-admin px-6 py-3 flex items-center gap-4">
-        <div class="w-3 h-3 rounded-full bg-admin-saffron animate-pulse"></div>
-        <span class="font-medium text-admin-saffron">System Online</span>
-      </div>
-    </header>
+<div class="page-wrap">
 
-    <!-- Stat Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="glass-container glass-admin p-8 group hover:scale-[1.02] transition-all">
-        <p class="text-gray-500 uppercase text-xs tracking-widest mb-2">Total Submissions</p>
-        <div class="flex items-baseline gap-2">
-          <span class="text-4xl font-bold">1,284</span>
-          <span class="text-admin-saffron text-sm">+5.2%</span>
-        </div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="page-badge">
+        <span class="dot admin"></span>
+        ADMIN PORTAL
       </div>
-      <div class="glass-container glass-admin p-8 group hover:scale-[1.02] transition-all">
-        <p class="text-gray-500 uppercase text-xs tracking-widest mb-2">Pending Audits</p>
-        <div class="flex items-baseline gap-2">
-          <span class="text-4xl font-bold">42</span>
-          <span class="text-amber-200 text-sm">Action Required</span>
-        </div>
+      <h1 class="page-title admin-color">Member Registry & Audit Oversight</h1>
+      <p class="page-sub">Enable members for audit submission · Track compliance status</p>
+    </div>
+    <div class="header-stats">
+      <div class="mini-stat">
+        <span class="mini-stat-val admin-color">{{ enabledMembers.length }}</span>
+        <span class="mini-stat-label">Members Enabled</span>
       </div>
-      <div class="glass-container glass-admin p-8 group hover:scale-[1.02] transition-all">
-        <p class="text-gray-500 uppercase text-xs tracking-widest mb-2">Network Health</p>
-        <div class="flex items-baseline gap-2">
-          <span class="text-4xl font-bold">99.9%</span>
-          <span class="text-admin-saffron text-sm">Stable</span>
-        </div>
+      <div class="mini-stat">
+        <span class="mini-stat-val" style="color:#facc15">{{ pendingCount }}</span>
+        <span class="mini-stat-label">Pending</span>
+      </div>
+      <div class="mini-stat">
+        <span class="mini-stat-val" style="color:#4ade80">{{ submittedCount }}</span>
+        <span class="mini-stat-label">Submitted</span>
       </div>
     </div>
-
-    <!-- Main Report Section -->
-    <div class="glass-container glass-admin p-10">
-      <div class="flex justify-between items-center mb-10">
-        <h2 class="text-2xl font-bold">Submission Intelligence Report</h2>
-        <button class="btn-admin">Export Analytics</button>
-      </div>
-
-      <div class="space-y-6">
-        <!-- Placeholder for actual list/table -->
-        <div class="p-6 bg-white/5 rounded-2xl border border-white/5 flex justify-between items-center">
-          <div>
-            <p class="font-bold text-lg">Financial Year 2024 - Q3</p>
-            <p class="text-gray-400 text-sm">Aggregated data from all exchange members</p>
-          </div>
-          <span class="text-admin-saffron font-bold text-xl">View Details →</span>
-        </div>
-        
-        <div class="p-6 bg-white/5 rounded-2xl border border-white/5 flex justify-between items-center opacity-70">
-          <div>
-            <p class="font-bold text-lg">Employee Performance Review</p>
-            <p class="text-gray-400 text-sm">Pending validation by Compliance Auditor</p>
-          </div>
-          <span class="text-admin-saffron font-bold text-xl">Review →</span>
-        </div>
-      </div>
-    </div>
-
   </div>
+
+  <!-- Two Column Layout -->
+  <div class="two-col">
+
+    <!-- LEFT: Enable Members -->
+    <div class="card glass-admin">
+      <div class="card-header">
+        <div class="card-icon admin-bg">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M12 4v16m8-8H4"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="card-title">Enable Member for Submission</h2>
+          <p class="card-sub">Upload Excel or add manually</p>
+        </div>
+      </div>
+
+      <!-- Tab Toggle -->
+      <div class="tab-toggle">
+        <button [class.tab-active]="inputMode === 'excel'" (click)="inputMode = 'excel'">
+          📄 Excel Upload
+        </button>
+        <button [class.tab-active]="inputMode === 'manual'" (click)="inputMode = 'manual'">
+          ✏️ Manual Entry
+        </button>
+      </div>
+
+      <!-- Excel Upload Mode -->
+      <div *ngIf="inputMode === 'excel'" class="input-section">
+        <div class="file-drop-zone" (click)="excelInput.click()" [class.has-file]="excelFileName">
+          <input #excelInput type="file" accept=".xlsx,.xls,.csv" (change)="onExcelFile($event)" class="hidden-input">
+          <div *ngIf="!excelFileName" class="drop-placeholder">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="drop-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <p>Click to upload Excel file</p>
+            <span>.xlsx / .xls / .csv supported</span>
+          </div>
+          <div *ngIf="excelFileName" class="drop-ready">
+            <span class="file-name-badge">📊 {{ excelFileName }}</span>
+            <p style="color: #4ade80; margin-top:8px; font-size:13px;">Ready to process</p>
+          </div>
+        </div>
+        <div class="format-note">
+          <strong>Required columns:</strong> Member Code, Audit Period, Email ID
+        </div>
+        <button class="btn-primary admin-gradient" (click)="uploadExcel()" [disabled]="!excelFile || uploading">
+          {{ uploading ? '⏳ Processing...' : '🚀 Enable Members from Excel' }}
+        </button>
+      </div>
+
+      <!-- Manual Entry Mode -->
+      <div *ngIf="inputMode === 'manual'" class="input-section">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Member Code</label>
+            <input type="text" [(ngModel)]="manualMemberCode" placeholder="e.g. M1001" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Audit Period</label>
+            <input type="text" [(ngModel)]="manualPeriod" placeholder="e.g. APR-26 TO MAR-27" class="form-input">
+          </div>
+          <div class="form-group full-span">
+            <label>Email ID</label>
+            <input type="email" [(ngModel)]="manualEmail" placeholder="e.g. member@company.com" class="form-input">
+          </div>
+        </div>
+        <button class="btn-primary admin-gradient" (click)="saveManual()" [disabled]="uploading">
+          {{ uploading ? '⏳ Saving...' : '✅ Enable Member' }}
+        </button>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Pending Audits Summary -->
+    <div class="card glass-subtle">
+      <div class="card-header">
+        <div class="card-icon" style="background: rgba(250,204,21,0.15);">
+          <svg fill="none" stroke="#facc15" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="card-title">Audit Pipeline</h2>
+          <p class="card-sub">Live status of all active audits</p>
+        </div>
+      </div>
+
+      <div class="pipeline-list" *ngIf="allAudits.length > 0">
+        <div *ngFor="let a of allAudits" class="pipeline-item" [ngClass]="getStatusClass(a.status)">
+          <div class="pipeline-left">
+            <div class="pipeline-avatar">{{ a.memberUsername?.charAt(0)?.toUpperCase() }}</div>
+            <div>
+              <p class="pipeline-name">{{ a.memberUsername }}</p>
+              <p class="pipeline-period">{{ a.auditPeriod || 'N/A' }}</p>
+            </div>
+          </div>
+          <span class="status-badge {{ getStatusClass(a.status) }}">{{ formatStatus(a.status) }}</span>
+        </div>
+      </div>
+      <div *ngIf="allAudits.length === 0" class="empty-state">
+        No active audits in pipeline
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Full Width: Member Registry Table -->
+  <div class="card glass-subtle" style="margin-top: 24px;">
+    <div class="card-header" style="margin-bottom:20px;">
+      <div class="card-icon admin-bg">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <div style="flex:1">
+        <h2 class="card-title">Organization Submission Registry</h2>
+        <p class="card-sub">All members enabled for this audit cycle</p>
+      </div>
+      <input type="text" [(ngModel)]="searchText" placeholder="🔍 Search member..." class="form-input" style="width:220px;">
+    </div>
+
+    <div class="table-wrap" *ngIf="filteredMembers.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Member Code</th>
+            <th>Audit Period</th>
+            <th>Email ID</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of filteredMembers; let i = index">
+            <td class="row-num">{{ i + 1 }}</td>
+            <td class="member-code admin-color">{{ m.memberCode }}</td>
+            <td>{{ m.auditPeriod }}</td>
+            <td class="email-cell">{{ m.emailId }}</td>
+            <td>
+              <span class="status-badge {{ getSubmissionStatusClass(m.submissionStatus) }}">
+                {{ m.submissionStatus || 'ENABLED' }}
+              </span>
+            </td>
+            <td>
+              <button class="action-btn notify-btn" (click)="notifyMember(m)" title="Send Email Reminder">
+                📧
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="filteredMembers.length === 0" class="empty-state">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:48px;height:48px;margin:0 auto 16px; color: rgba(255,255,255,0.15)">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+      </svg>
+      No members enabled yet. Use the form above to add members.
+    </div>
+  </div>
+
 </div>

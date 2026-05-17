@@ -1,9 +1,15 @@
-<app-navbar (toggleSidebar)="toggleSidebar()"></app-navbar>
+<div class="app-shell">
 
-<div class="layout">
-  <app-sidebar></app-sidebar>
+  <!-- Top Navbar -->
+  <app-navbar></app-navbar>
 
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
+  <!-- Body: Sidebar + Content -->
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+
+    <main class="app-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
 </div>

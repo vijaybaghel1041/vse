@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditService, Audit } from '../../core/services/audit.service';
 import { AuthService } from '../../core/services/auth.service';
-import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-audit-workflow',
@@ -13,26 +12,26 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./audit-workflow.css']
 })
 export class AuditWorkflowComponent implements OnInit {
+
   role: string | null = '';
   username: string | null = '';
-  
+
   audits: Audit[] = [];
   selectedAudit: Audit | null = null;
-  enabledMembers: any[] = [];
 
-  // Admin Excel Upload
-  uploading = false;
-  excelDataLine = 'M1001,APR-26 TO MAR-27,contact@member.com';
-  auditDescription = '';
+  // UI State
+  showInitiateForm = false;
+
+  // Member - Initiate
   assignedAuditor = '';
   excelFileName = '';
-  excelFile: any = null;
-  reportFileName = '';
-  responseFileName = '';
-  adminDecisionValue: 'APPROVED' | 'REJECTED' = 'APPROVED';
-  adminComments = '';
-  auditorComment = '';
+  auditDescription = '';
+
+  // Member - Response
   memberComment = '';
+
+  // Admin - Decision
+  adminComments = '';
 
   constructor(
     private auditService: AuditService,
@@ -41,107 +40,133 @@ export class AuditWorkflowComponent implements OnInit {
 
   ngOnInit() {
     this.role = this.authService.getUserRole();
-    this.username = localStorage.getItem('username') || (this.role === 'ADMIN' ? 'Admin' : 'Member1');
+    this.username = localStorage.getItem('username') || (this.role === 'ADMIN' ? 'admin' : 'member1');
     this.loadAudits();
-    if (this.role === 'ADMIN') this.loadEnabledMembers();
-  }
-
-  loadEnabledMembers() {
-    this.auditService.getEnabledMembers().subscribe(res => this.enabledMembers = res);
-  }
-
-  onFileSelected(event: any, role?: string) {
-    const file = event.target.files[0];
-    if (file) {
-      if (role === 'Member') {
-        this.responseFileName = file.name;
-      } else if (role === 'Auditor') {
-        this.reportFileName = file.name;
-      } else {
-        this.excelFileName = file.name;
-        this.excelFile = file;
-      }
-    }
-  }
-
-  uploadExcel() {
-    this.uploading = true;
-    const parts = this.excelDataLine.split(',');
-    const payload = [{
-      memberCode: parts[0],
-      auditPeriod: parts[1],
-      emailId: parts[2]
-    }];
-    
-    this.auditService.enableMembers(payload).subscribe(res => {
-      this.enabledMembers = res;
-      this.uploading = false;
-      alert('Member Enabled and Data Saved to DB!');
-    });
-  }
-
-  addAuditor() {
-    alert('Redirecting to Auditor Appointment & Registration...');
   }
 
   loadAudits() {
     if (this.role === 'ADMIN') {
-      this.auditService.getAllAudits().subscribe(res => this.audits = res);
+      this.auditService.getAllAudits().subscribe({ next: (r) => this.audits = r, error: () => {} });
     } else if (this.role === 'AUDITOR') {
-      this.auditService.getAuditorAudits(this.username!).subscribe(res => this.audits = res);
+      this.auditService.getAuditorAudits(this.username!).subscribe({ next: (r) => this.audits = r, error: () => {} });
     } else {
-      this.auditService.getMemberAudits(this.username!).subscribe(res => this.audits = res);
+      this.auditService.getMemberAudits(this.username!).subscribe({ next: (r) => this.audits = r, error: () => {} });
     }
   }
 
-  // --- ACTIONS ---
-
-  initiateAudit() {
-    this.auditService.initiate(this.username!, this.assignedAuditor, this.excelFileName, this.auditDescription)
-      .subscribe(() => {
-        alert('Audit Initiated & Excel Uploaded!');
-        this.loadAudits();
-        this.resetForms();
-      });
+  selectAudit(audit: Audit) {
+    this.selectedAudit = audit;
+    this.showInitiateForm = false;
   }
 
-  submitAuditorReport() {
-    if (!this.selectedAudit?.id) return;
-    this.auditService.submitAuditorReport(this.selectedAudit.id, this.reportFileName)
-      .subscribe(() => {
-        alert('Auditor Report Submitted Successfully!');
-        this.loadAudits();
-        this.selectedAudit = null;
+  // ──── Getters ────
+
+  get pendingApprovalCount(): number {
+    return this.audits.filter(a => a.status === 'MEMBER_RESPONDED').length;
+  }
+
+  get approvedCount(): number {
+    return this.audits.filter(a => a.status === 'APPROVED').length;
+  }
+
+  get awaitingResponseCount(): number {
+    return this.audits.filter(a => a.status === 'AUDITOR_REPORTED').length;
+  }
+
+  // ──── Member Actions ────
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) this.excelFileName = file.name;
+  }
+
+  initiateAudit() {
+    if (!this.assignedAuditor) { alert('Please enter auditor username.'); return; }
+    this.auditService.initiate(this.username!, this.assignedAuditor, this.excelFileName, this.auditDescription)
+      .subscribe({
+        next: () => {
+          alert('✅ Audit initiated successfully!');
+          this.showInitiateForm = false;
+          this.assignedAuditor = '';
+          this.excelFileName = '';
+          this.auditDescription = '';
+          this.loadAudits();
+        },
+        error: () => alert('Failed to initiate audit. Please try again.')
       });
   }
 
   submitMemberResponse() {
     if (!this.selectedAudit?.id) return;
-    this.auditService.submitMemberResponse(this.selectedAudit.id, this.responseFileName)
-      .subscribe(() => {
-        alert('Final Response Uploaded & Sent to Admin!');
-        this.loadAudits();
-        this.selectedAudit = null;
+    this.auditService.submitMemberResponse(this.selectedAudit.id, this.memberComment)
+      .subscribe({
+        next: () => {
+          alert('✅ Response submitted to Admin for approval!');
+          this.selectedAudit = null;
+          this.memberComment = '';
+          this.loadAudits();
+        },
+        error: () => alert('Submission failed. Please try again.')
       });
   }
+
+  // ──── Admin Actions ────
 
   adminDecision(decision: 'APPROVED' | 'REJECTED') {
     if (!this.selectedAudit?.id) return;
     this.auditService.adminDecision(this.selectedAudit.id, decision, this.adminComments)
-      .subscribe(() => {
-        alert(`Audit ${decision} by Administrative Board`);
-        this.loadAudits();
-        this.selectedAudit = null;
+      .subscribe({
+        next: () => {
+          alert(`✅ Audit ${decision} by Administrative Board`);
+          this.selectedAudit = null;
+          this.adminComments = '';
+          this.loadAudits();
+        },
+        error: () => alert('Decision failed. Please try again.')
       });
   }
 
-  selectAudit(audit: Audit) {
-    this.selectedAudit = audit;
+  // ──── Workflow Step Classes (for MEMBER) ────
+
+  getStepClass(step: number): string {
+    if (!this.selectedAudit) return '';
+    const statusOrder = ['INITIATED', 'PENDING_AUDITOR', 'AUDITOR_REPORTED', 'MEMBER_RESPONDED', 'APPROVED'];
+    const currentIdx = statusOrder.indexOf(this.selectedAudit.status);
+    if (currentIdx + 1 > step) return 'done';
+    if (currentIdx + 1 === step) return 'active';
+    return '';
   }
 
-  resetForms() {
-    this.auditDescription = '';
-    this.assignedAuditor = '';
-    this.excelFileName = '';
+  getStepLineClass(step: number): string {
+    if (!this.selectedAudit) return '';
+    const statusOrder = ['INITIATED', 'PENDING_AUDITOR', 'AUDITOR_REPORTED', 'MEMBER_RESPONDED', 'APPROVED'];
+    const currentIdx = statusOrder.indexOf(this.selectedAudit.status);
+    return currentIdx >= step ? 'done' : '';
+  }
+
+  // ──── Formatting ────
+
+  formatStatus(status: string): string {
+    const map: any = {
+      'INITIATED': 'Initiated',
+      'PENDING_AUDITOR': 'Awaiting Auditor',
+      'AUDITOR_REPORTED': 'Report Filed',
+      'MEMBER_RESPONDED': 'Pending Approval',
+      'APPROVED': 'Approved ✓',
+      'REJECTED': 'Rejected ✗'
+    };
+    return map[status] || status;
+  }
+
+  getStatusClass(status: string): string {
+    const map: any = {
+      'INITIATED': 'status-initiated',
+      'PENDING_AUDITOR': 'status-pending',
+      'AUDITOR_REPORTED': 'status-reported',
+      'MEMBER_RESPONDED': 'status-responded',
+      'APPROVED': 'status-approved',
+      'REJECTED': 'status-rejected'
+    };
+    return map[status] || 'status-pending';
   }
 }

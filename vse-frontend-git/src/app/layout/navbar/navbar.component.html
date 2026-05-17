@@ -1,23 +1,39 @@
-<nav class="vse-nav">
-  <div class="flex items-center gap-3">
-    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-      <span class="text-black font-extrabold text-xl">V</span>
-    </div>
-    <div class="flex flex-col">
-      <span class="text-xl font-bold tracking-tight leading-none">VSE <span class="font-light opacity-50 text-xs">OFFICIAL</span></span>
-      <span class="text-[10px] text-gray-500 font-medium uppercase tracking-[3px] mt-1">Burj Khalifa Edition</span>
+<nav class="top-nav">
+
+  <!-- Left: Brand -->
+  <div class="nav-brand">
+    <div class="nav-logo">V</div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-name">VSE</span>
+      <span class="nav-brand-edition">Audit System</span>
     </div>
   </div>
 
-  <div class="hidden md:flex gap-10 items-center">
-    <a routerLink="/" class="vse-nav-link text-sm uppercase tracking-widest font-bold">Home</a>
-    <a routerLink="/dashboard" class="vse-nav-link text-sm uppercase tracking-widest font-bold">Market Intelligence</a>
+  <!-- Center: Quick Nav -->
+  <div class="nav-links">
+    <a routerLink="/dashboard" class="nav-link">Overview</a>
+    <a *ngIf="role === 'ADMIN'"   routerLink="/admin/members"   class="nav-link">Members</a>
+    <a *ngIf="role === 'ADMIN'"   routerLink="/admin/audits"    class="nav-link">Audits</a>
+    <a *ngIf="role === 'MEMBER'"  routerLink="/member/initiate" class="nav-link">My Audits</a>
+    <a *ngIf="role === 'AUDITOR'" routerLink="/auditor/queue"   class="nav-link">Queue</a>
   </div>
 
-  <div class="flex gap-4 items-center">
-    <div class="h-8 w-[1px] bg-white/10 mx-2 hidden md:block"></div>
-    <button (click)="logout()" class="px-6 py-2 border border-white/20 rounded-lg text-sm font-bold hover:bg-white hover:text-black transition-all duration-500">
-      Logout
+  <!-- Right: User + Logout -->
+  <div class="nav-right">
+    <div class="nav-user-info" *ngIf="role">
+      <div class="nav-avatar">{{ username.charAt(0).toUpperCase() }}</div>
+      <div class="nav-user-meta">
+        <span class="nav-username">{{ username }}</span>
+        <span class="nav-role-tag {{ role.toLowerCase() }}">{{ role }}</span>
+      </div>
+    </div>
+    <button (click)="logout()" class="nav-logout-btn">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px;height:16px;">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+      </svg>
+      Sign Out
     </button>
   </div>
+
 </nav>

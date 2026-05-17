@@ -1,148 +1,297 @@
-<div class="burj-bg min-h-screen p-8 text-white font-sans">
-  
-  <div class="max-w-7xl mx-auto space-y-12">
-    
-    <!-- Top Header Simplified -->
-    <div class="flex justify-between items-center mb-12">
-      <h1 class="text-4xl font-bold tracking-tight text-admin-saffron" *ngIf="role === 'ADMIN'">Member Submissions</h1>
-      <h1 class="text-4xl font-bold tracking-tight" *ngIf="role === 'MEMBER'">My Audits</h1>
+<div class="page-wrap">
+
+  <!-- ════════ ADMIN VIEW ════════ -->
+  <ng-container *ngIf="role === 'ADMIN'">
+
+    <div class="page-header">
+      <div>
+        <div class="page-badge"><span class="dot admin"></span>ADMIN CONTROL</div>
+        <h1 class="page-title admin-color">Audit Oversight Dashboard</h1>
+        <p class="page-sub">Full view of all active and completed audits across the organization</p>
+      </div>
+      <div class="header-stats">
+        <div class="mini-stat">
+          <span class="mini-stat-val admin-color">{{ audits.length }}</span>
+          <span class="mini-stat-label">Total Audits</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-val" style="color:#c084fc">{{ pendingApprovalCount }}</span>
+          <span class="mini-stat-label">Pending Approval</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-val" style="color:#4ade80">{{ approvedCount }}</span>
+          <span class="mini-stat-label">Approved</span>
+        </div>
+      </div>
     </div>
 
-    <!-- MAIN DASHBOARD CONTENT -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-      
-      <!-- LEFT: AUDIT LIST / HISTORY -->
-      <div class="space-y-6">
-        <div class="glass-container p-6 bg-white/5 border-white/10">
-          <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500 mb-6">Pipeline Logs</h3>
-          
-          <div class="space-y-4">
-            <div *ngFor="let audit of audits" 
-                 (click)="selectAudit(audit)"
-                 [class.border-admin-saffron]="selectedAudit?.id === audit.id"
-                 class="p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 cursor-pointer transition-all">
-              <div class="flex justify-between items-start mb-2">
-                <span class="text-sm font-bold">{{ audit.companyName }}</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10">{{ audit.status }}</span>
+    <div class="two-col">
+      <!-- Audit List -->
+      <div class="card glass-admin" style="overflow-y:auto; max-height:70vh;">
+        <div class="card-header" style="margin-bottom:16px;">
+          <div class="card-icon admin-bg">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+          </div>
+          <div><h2 class="card-title">All Audit Cases</h2></div>
+        </div>
+        <div class="verify-queue">
+          <div *ngFor="let audit of audits"
+            class="verify-card"
+            [class.selected]="selectedAudit?.id === audit.id"
+            (click)="selectAudit(audit)">
+            <div class="verify-meta">
+              <div class="verify-info">
+                <h4>{{ audit.companyName || audit.memberUsername }}</h4>
+                <p>Auditor: {{ audit.auditorUsername || 'Not Assigned' }}</p>
               </div>
-              <p class="text-[11px] text-gray-500">Period: {{ audit.auditPeriod }}</p>
+              <span class="status-badge {{ getStatusClass(audit.status) }}">{{ formatStatus(audit.status) }}</span>
             </div>
-
-            <div *ngIf="audits.length === 0" class="text-center py-12 text-gray-600 text-sm">
-              No entries in log.
+            <div style="font-size:11px; color: rgba(255,255,255,0.2); margin-top:4px;">
+              Member: {{ audit.memberUsername }}
             </div>
           </div>
+          <div *ngIf="audits.length === 0" class="empty-state">No audits in the system yet</div>
         </div>
       </div>
 
-      <!-- RIGHT: ACTION PANEL (STATE-DEPENDENT) -->
-      <div class="lg:col-span-2">
-        
-        <!-- ADMIN: MAPPING / MANUAL DATA ENTRY -->
-        <div *ngIf="role === 'ADMIN' && !selectedAudit" class="space-y-12">
-          <div class="glass-container p-10 border-white/10 bg-white/5">
-            <h2 class="text-2xl font-bold mb-6">Enable New Member <span class="text-xs ml-4 bg-white/10 px-3 py-1 rounded text-admin-saffron">MANUAL ENTRY</span></h2>
-            <div class="space-y-6">
-              <p class="text-gray-400 text-sm">Format: <span class="text-white">M1001, APR-26 TO MAR-27, contact@member.com</span></p>
-              <textarea [(ngModel)]="excelDataLine" class="vse-input h-24 font-mono text-sm bg-black/30 border-white/10 rounded-2xl p-4 w-full text-white" placeholder="MemberCode, Period, Email"></textarea>
-              <button (click)="uploadExcel()" class="bg-admin-saffron text-black w-full py-4 rounded-xl font-bold hover:scale-[1.02] transition-transform">
-                {{ uploading ? 'Processing...' : 'Save & Enable Member' }}
-              </button>
+      <!-- Admin Decision Panel -->
+      <div>
+        <!-- No selection -->
+        <div *ngIf="!selectedAudit" class="card glass-subtle" style="text-align:center; padding:60px 30px;">
+          <h3 style="color:rgba(255,255,255,0.3); font-weight:600; font-size:15px;">Select an audit to review</h3>
+        </div>
+
+        <!-- MEMBER_RESPONDED: Admin can Approve/Reject -->
+        <div *ngIf="selectedAudit && selectedAudit.status === 'MEMBER_RESPONDED'" class="card glass-admin">
+          <div class="card-header" style="margin-bottom:20px;">
+            <div class="card-icon admin-bg">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="card-title">Final Determination</h2>
+              <p class="card-sub">{{ selectedAudit.memberUsername }} — ready for approval</p>
             </div>
           </div>
 
-          <!-- Status Grid -->
-          <div class="glass-container overflow-hidden border-white/10 bg-black/20">
-            <div class="p-6 border-b border-white/10 bg-white/5">
-              <h3 class="font-bold text-sm tracking-widest uppercase">Organization Submission Registry</h3>
+          <div class="detail-grid" style="margin-bottom:20px;">
+            <div class="detail-item">
+              <span class="detail-label">Member</span>
+              <span class="detail-val">{{ selectedAudit.memberUsername }}</span>
             </div>
-            <table class="w-full text-left">
-              <thead class="bg-white/5 text-[10px] text-gray-500 uppercase tracking-widest">
-                <tr>
-                  <th class="p-6">Member Code</th>
-                  <th class="p-6">Audit Period</th>
-                  <th class="p-6">Email ID</th>
-                  <th class="p-6">Status</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/5">
-                <tr *ngFor="let mem of enabledMembers" class="hover:bg-white/5 transition-colors">
-                  <td class="p-6 font-bold text-admin-saffron">{{ mem.memberCode }}</td>
-                  <td class="p-6 text-sm">{{ mem.auditPeriod }}</td>
-                  <td class="p-6 text-sm text-gray-400">{{ mem.emailId }}</td>
-                  <td class="p-6">
-                    <span class="px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[10px] tracking-tighter">{{ mem.submissionStatus }}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- MEMBER: INITIATE -->
-        <div *ngIf="role === 'MEMBER' && !selectedAudit" class="glass-container p-12 bg-white/5 border-white/10 text-center">
-          <div class="max-w-md mx-auto space-y-8">
-            <h2 class="text-3xl font-bold">Initiate Audit</h2>
-            <p class="text-gray-400">Please provide your organization's financials to begin the workflow.</p>
-            
-            <button (click)="addAuditor()" class="w-full bg-white text-black py-4 rounded-xl font-bold hover:bg-gray-200 transition-all">
-              Appoint Auditor +
-            </button>
-
-            <div class="pt-8 border-t border-white/5 space-y-6">
-              <input type="file" (change)="onFileSelected($event, 'Member')" class="hidden" #fileInput>
-              <button (click)="fileInput.click()" class="vse-input border-dashed text-gray-500 hover:text-white transition-all">
-                {{ excelFileName || 'Select Financial Data (Excel/PDF)' }}
-              </button>
-              <button (click)="initiateAudit()" class="btn-member w-full" [disabled]="!excelFile">
-                Begin Verification Process
-              </button>
+            <div class="detail-item">
+              <span class="detail-label">Auditor</span>
+              <span class="detail-val">{{ selectedAudit.auditorUsername }}</span>
             </div>
           </div>
-        </div>
 
-        <!-- STAGE 2: AUDITOR REPORT -->
-        <div *ngIf="selectedAudit && selectedAudit.status === 'PENDING_AUDITOR' && role === 'AUDITOR'" class="glass-container p-12 bg-white/5 border-white/10">
-          <h2 class="text-3xl font-bold mb-8">Auditor Verification</h2>
-          <textarea [(ngModel)]="auditorComment" class="vse-input mb-6 h-32" placeholder="Provide audit findings..."></textarea>
-          <input type="file" (change)="onFileSelected($event, 'Auditor')" class="vse-input mb-8">
-          <button (click)="submitAuditorReport()" class="btn-auditor w-full">Submit Final Audit Report</button>
-        </div>
-
-        <!-- STAGE 3: MEMBER RESPONSE -->
-        <div *ngIf="selectedAudit && selectedAudit.status === 'AUDITOR_REPORTED' && role === 'MEMBER'" class="glass-container p-12 bg-white/5 border-white/10">
-          <h2 class="text-3xl font-bold mb-4">Final Review</h2>
-          <p class="mb-8 text-gray-400">Review the auditor's findings and provide your response.</p>
-          <div class="p-6 bg-white/5 rounded-2xl mb-8 border border-white/10 italic text-gray-300">
-            "{{ selectedAudit.auditorComment }}"
+          <div class="form-group" style="margin-bottom:16px;">
+            <label>Admin Comments (Optional)</label>
+            <textarea [(ngModel)]="adminComments" class="audit-textarea" rows="3" placeholder="Add final remarks..."></textarea>
           </div>
-          <textarea [(ngModel)]="memberComment" class="vse-input mb-8 h-32" placeholder="Your final response..."></textarea>
-          <button (click)="submitMemberResponse()" class="btn-member w-full">Submit to Admin for Approval</button>
-        </div>
 
-        <!-- STAGE 4: ADMIN APPROVAL -->
-        <div *ngIf="selectedAudit && selectedAudit.status === 'MEMBER_RESPONDED' && role === 'ADMIN'" class="glass-container p-12 bg-white/5 border-white/10 text-center">
-          <h2 class="text-3xl font-bold mb-4">Final Determination</h2>
-          <p class="text-gray-400 mb-12">Review the complete audit log before decision.</p>
-          
-          <div class="grid grid-cols-2 gap-6 mb-12">
-            <button (click)="adminDecision('APPROVED')" class="btn-admin py-6 text-xl">Approve</button>
-            <button (click)="adminDecision('REJECTED')" class="bg-red-600/20 text-red-500 border border-red-500/20 py-6 text-xl rounded-2xl hover:bg-red-600 hover:text-white transition-all">Reject</button>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <button class="btn-primary auditor-gradient" (click)="adminDecision('APPROVED')">✓ Approve Audit</button>
+            <button class="btn-primary" style="background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2);" (click)="adminDecision('REJECTED')">✗ Reject Audit</button>
           </div>
+          <button class="btn-primary" style="background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.3); margin-top:10px;" (click)="selectedAudit = null">← Back</button>
         </div>
 
-        <!-- SUCCESS STATE -->
-        <div *ngIf="selectedAudit && (selectedAudit.status === 'APPROVED' || selectedAudit.status === 'REJECTED')" class="glass-container p-12 bg-white/5 border-white/10 text-center">
-          <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" 
-               [ngClass]="selectedAudit.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-red-500/20 text-red-500'">
-            <span class="text-4xl font-bold">{{ selectedAudit.status === 'APPROVED' ? '✓' : '✕' }}</span>
+        <!-- Other Status: Info View -->
+        <div *ngIf="selectedAudit && selectedAudit.status !== 'MEMBER_RESPONDED'" class="card glass-subtle">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 class="card-title">Audit Status</h3>
+            <span class="status-badge {{ getStatusClass(selectedAudit.status) }}">{{ formatStatus(selectedAudit.status) }}</span>
           </div>
-          <h2 class="text-3xl font-bold mb-2">Audit {{ selectedAudit.status }}</h2>
-          <p class="text-gray-400 mb-8">This process is now archived in the official records.</p>
-          <button (click)="selectedAudit = null; loadAudits()" class="bg-white/10 px-8 py-3 rounded-xl hover:bg-white/20 transition-all">Back to Pipeline</button>
+          <div class="detail-grid">
+            <div class="detail-item"><span class="detail-label">Member</span><span class="detail-val">{{ selectedAudit.memberUsername }}</span></div>
+            <div class="detail-item"><span class="detail-label">Auditor</span><span class="detail-val">{{ selectedAudit.auditorUsername || '—' }}</span></div>
+            <div class="detail-item"><span class="detail-label">Period</span><span class="detail-val">{{ selectedAudit.auditPeriod || '—' }}</span></div>
+            <div class="detail-item"><span class="detail-label">Document</span><span class="detail-val auditor-color">{{ selectedAudit.initialExcelFile || '—' }}</span></div>
+          </div>
+          <button class="btn-primary" style="background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.3); margin-top:16px;" (click)="selectedAudit = null">← Back</button>
         </div>
-
       </div>
     </div>
-  </div>
+
+  </ng-container>
+
+  <!-- ════════ MEMBER VIEW ════════ -->
+  <ng-container *ngIf="role === 'MEMBER'">
+
+    <div class="page-header">
+      <div>
+        <div class="page-badge"><span class="dot member"></span>MEMBER PORTAL</div>
+        <h1 class="page-title">My Audit Submissions</h1>
+        <p class="page-sub">Initiate · Upload Documents · Track Status · Respond to Auditor</p>
+      </div>
+      <div class="header-stats">
+        <div class="mini-stat">
+          <span class="mini-stat-val" style="color:#a5b4fc">{{ audits.length }}</span>
+          <span class="mini-stat-label">My Audits</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-val" style="color:#facc15">{{ awaitingResponseCount }}</span>
+          <span class="mini-stat-label">Action Needed</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow Steps -->
+    <div class="card glass-subtle" style="margin-bottom:20px;">
+      <div class="workflow-steps">
+        <div class="step" [ngClass]="getStepClass(1)">
+          <div class="step-circle">1</div>
+          <div class="step-label">Initiate</div>
+        </div>
+        <div class="step-line" [ngClass]="getStepLineClass(1)"></div>
+        <div class="step" [ngClass]="getStepClass(2)">
+          <div class="step-circle">2</div>
+          <div class="step-label">Auditor Review</div>
+        </div>
+        <div class="step-line" [ngClass]="getStepLineClass(2)"></div>
+        <div class="step" [ngClass]="getStepClass(3)">
+          <div class="step-circle">3</div>
+          <div class="step-label">Your Response</div>
+        </div>
+        <div class="step-line" [ngClass]="getStepLineClass(3)"></div>
+        <div class="step" [ngClass]="getStepClass(4)">
+          <div class="step-circle">4</div>
+          <div class="step-label">Admin Decision</div>
+        </div>
+        <div class="step-line" [ngClass]="getStepLineClass(4)"></div>
+        <div class="step" [ngClass]="getStepClass(5)">
+          <div class="step-circle">✓</div>
+          <div class="step-label">Closed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+
+      <!-- My Audits List -->
+      <div class="card glass-subtle" style="overflow-y:auto; max-height:65vh;">
+        <div class="card-header" style="margin-bottom:16px;">
+          <div class="card-icon" style="background:rgba(255,255,255,0.08);">
+            <svg fill="none" stroke="#fff" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div><h2 class="card-title">My Audit History</h2></div>
+        </div>
+
+        <!-- Initiate New Button -->
+        <button class="btn-primary admin-gradient" style="margin-bottom:14px;" (click)="showInitiateForm = !showInitiateForm">
+          {{ showInitiateForm ? '× Cancel' : '+ Initiate New Audit' }}
+        </button>
+
+        <!-- Initiate Form -->
+        <div *ngIf="showInitiateForm" class="card glass-admin" style="margin-bottom:14px; padding:20px;">
+          <h3 style="font-size:14px; font-weight:700; color:#FF9933; margin:0 0 14px;">New Audit Request</h3>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>Assign Auditor Username</label>
+            <input type="text" [(ngModel)]="assignedAuditor" class="form-input" placeholder="e.g. auditor1">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>Financial Data File</label>
+            <div class="file-drop-zone" (click)="docInput.click()" [class.has-file]="excelFileName">
+              <input #docInput type="file" (change)="onFileSelected($event)" class="hidden-input">
+              <div *ngIf="!excelFileName" class="drop-placeholder"><p>Select document (Excel/PDF)</p></div>
+              <div *ngIf="excelFileName" class="drop-ready">
+                <span class="file-name-badge">📄 {{ excelFileName }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label>Description</label>
+            <textarea [(ngModel)]="auditDescription" class="audit-textarea" rows="3" placeholder="Describe the audit scope..."></textarea>
+          </div>
+          <button class="btn-primary admin-gradient" (click)="initiateAudit()">Submit Audit Request</button>
+        </div>
+
+        <!-- Audit List -->
+        <div class="verify-queue">
+          <div *ngFor="let audit of audits"
+            class="verify-card"
+            [class.selected]="selectedAudit?.id === audit.id"
+            (click)="selectAudit(audit)">
+            <div class="verify-meta">
+              <div class="verify-info">
+                <h4>Audit #{{ audit.id }}</h4>
+                <p>Auditor: {{ audit.auditorUsername || 'Pending' }}</p>
+              </div>
+              <span class="status-badge {{ getStatusClass(audit.status) }}">{{ formatStatus(audit.status) }}</span>
+            </div>
+          </div>
+          <div *ngIf="audits.length === 0 && !showInitiateForm" class="empty-state">
+            No audits started. Click "+ Initiate New Audit" above.
+          </div>
+        </div>
+      </div>
+
+      <!-- Member Action Panel -->
+      <div>
+        <!-- No Selection -->
+        <div *ngIf="!selectedAudit" class="card glass-subtle" style="text-align:center; padding:60px 30px;">
+          <h3 style="color:rgba(255,255,255,0.3); font-size:15px; font-weight:600;">Select an audit to view details</h3>
+        </div>
+
+        <!-- AUDITOR_REPORTED: Member must Respond -->
+        <div *ngIf="selectedAudit && selectedAudit.status === 'AUDITOR_REPORTED'" class="card glass-subtle">
+          <div class="card-header" style="margin-bottom:20px;">
+            <div class="card-icon" style="background:rgba(96,165,250,0.15);">
+              <svg fill="none" stroke="#60a5fa" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="card-title">Auditor Report Received</h2>
+              <p class="card-sub">Please review and submit your response</p>
+            </div>
+          </div>
+
+          <div class="card glass-subtle" style="margin-bottom:16px; padding:14px 18px;">
+            <p style="font-size:11px; color: rgba(255,255,255,0.3); margin:0 0 6px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Auditor Findings</p>
+            <p style="font-size:13.5px; color: rgba(255,255,255,0.7); font-style:italic; margin:0;">
+              "{{ selectedAudit.auditorComment || 'No written comment provided.' }}"
+            </p>
+          </div>
+
+          <div class="form-group" style="margin-bottom:14px;">
+            <label>Your Response to Auditor</label>
+            <textarea [(ngModel)]="memberComment" class="audit-textarea" rows="4" placeholder="Provide your response, clarifications, or acceptance..."></textarea>
+          </div>
+
+          <button class="btn-primary" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color:#fff;" (click)="submitMemberResponse()">
+            Submit Response to Admin →
+          </button>
+          <button class="btn-primary" style="background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.3); margin-top:10px;" (click)="selectedAudit = null">← Back</button>
+        </div>
+
+        <!-- Other status: read-only view -->
+        <div *ngIf="selectedAudit && selectedAudit.status !== 'AUDITOR_REPORTED'" class="card glass-subtle">
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+            <h3 class="card-title">Audit Status</h3>
+            <span class="status-badge {{ getStatusClass(selectedAudit.status) }}">{{ formatStatus(selectedAudit.status) }}</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item"><span class="detail-label">Audit ID</span><span class="detail-val">#{{ selectedAudit.id }}</span></div>
+            <div class="detail-item"><span class="detail-label">Auditor</span><span class="detail-val">{{ selectedAudit.auditorUsername || '—' }}</span></div>
+            <div class="detail-item"><span class="detail-label">Document</span><span class="detail-val" style="color:#FF9933;">{{ selectedAudit.initialExcelFile || '—' }}</span></div>
+            <div class="detail-item">
+              <span class="detail-label">Admin Comments</span>
+              <span class="detail-val" style="font-size:12px; color:rgba(255,255,255,0.5);">{{ selectedAudit.adminComments || '—' }}</span>
+            </div>
+          </div>
+          <button class="btn-primary" style="background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.3); margin-top:16px;" (click)="selectedAudit = null">← Back</button>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
 </div>

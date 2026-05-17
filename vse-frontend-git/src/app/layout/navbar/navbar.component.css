@@ -1,20 +1,95 @@
-.navbar {
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+  padding: 0 24px;
+  background: rgba(10, 14, 26, 0.96);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 100;
+  flex-shrink: 0;
 }
 
-mat-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+/* Brand */
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+
+.nav-logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #FF9933, #e07a1f);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; color: #000;
+  box-shadow: 0 2px 12px rgba(255,153,51,0.35);
 }
 
-.spacer {
-  flex: 1 1 auto;
+.nav-brand-text { display: flex; flex-direction: column; line-height: 1; }
+.nav-brand-name { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+.nav-brand-edition { font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 2px; margin-top: 2px; font-weight: 600; }
+
+/* Links */
+.nav-links { display: flex; gap: 4px; align-items: center; }
+
+.nav-link {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.nav-link:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
 }
 
-.title {
-  font-weight: bold;
-  font-size: 1.5rem;
+/* Right section */
+.nav-right { display: flex; align-items: center; gap: 14px; }
+
+.nav-user-info { display: flex; align-items: center; gap: 10px; }
+
+.nav-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff;
+}
+
+.nav-user-meta { display: flex; flex-direction: column; line-height: 1; }
+.nav-username { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.75); }
+
+.nav-role-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  margin-top: 3px; text-transform: uppercase;
+}
+.nav-role-tag.admin   { color: #FF9933; }
+.nav-role-tag.member  { color: rgba(255,255,255,0.4); }
+.nav-role-tag.auditor { color: #2ECC71; }
+
+.nav-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Outfit', sans-serif;
+}
+.nav-logout-btn:hover {
+  border-color: rgba(239,68,68,0.4);
+  color: #f87171;
+  background: rgba(239,68,68,0.05);
 }

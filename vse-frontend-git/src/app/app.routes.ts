@@ -13,14 +13,15 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 
 import { AuditorComponent } from './pages/auditor/auditor.component';
 import { AuditWorkflowComponent } from './pages/audit-workflow/audit-workflow';
+import { SubmissionReport } from './pages/admin/submission-report/submission-report';
 
 export const routes: Routes = [
 
-  // ✅ LANDING IS DEFAULT
+  // 🌐 PUBLIC
   { path: '', component: Landing, pathMatch: 'full' },
   { path: 'market-qa', component: MarketQa },
 
-  // 🔐 AUTH (NO NAVBAR)
+  // 🔐 AUTH LAYOUT (no sidebar/navbar)
   {
     path: '',
     component: AuthLayoutComponent,
@@ -30,20 +31,34 @@ export const routes: Routes = [
     ]
   },
 
-  // 🔒 PROTECTED AREA
+  // 🔒 PROTECTED AREA (with sidebar + navbar)
   {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'annual-submission', component: VseFormComponent },
+      // Common
+      { path: 'dashboard',          component: DashboardComponent },
+      { path: 'annual-submission',  component: VseFormComponent },
+
+      // Admin Routes
+      { path: 'admin/members',      component: SubmissionReport },
+      { path: 'admin/audits',       component: AuditWorkflowComponent },
+      { path: 'admin/reports',      component: SubmissionReport },
+
+      // Member Routes
+      { path: 'member/initiate',    component: AuditWorkflowComponent },
+      { path: 'member/history',     component: AuditWorkflowComponent },
       { path: 'member-submissions', component: AuditWorkflowComponent },
-      { path: 'auditor', component: AuditorComponent },
+
+      // Auditor Routes
+      { path: 'auditor/queue',      component: AuditorComponent },
+      { path: 'auditor/completed',  component: AuditorComponent },
+      { path: 'auditor',            component: AuditorComponent },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
 
-  // ❌ UNKNOWN URL → LANDING
   { path: '**', redirectTo: '' }
 ];
