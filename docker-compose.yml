@@ -11,6 +11,17 @@ services:
       - "3308:3306" # Mapped to 3308 to prevent clashing with your native DB
     volumes:
       - vse_db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    container_name: vse-redis
+    ports:
+      - "6379:6379"
 
   backend:
     build:
@@ -22,8 +33,12 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/vse_db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATA_REDIS_HOST=redis
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   frontend:
     build:
