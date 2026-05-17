@@ -23,6 +23,16 @@ services:
     ports:
       - "6379:6379"
 
+  redis-exporter:
+    image: oliver006/redis_exporter
+    container_name: vse-redis-exporter
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+    ports:
+      - "9121:9121"
+    depends_on:
+      - redis
+
   backend:
     build:
       context: ./vse-backend-git
