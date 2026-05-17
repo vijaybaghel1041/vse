@@ -1,0 +1,14 @@
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.burj-bg {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('/assets/images/burj_khalifa_premium_office.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}

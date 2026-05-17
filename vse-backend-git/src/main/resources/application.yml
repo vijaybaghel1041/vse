@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: vse
+  datasource:
+    url: jdbc:mysql://localhost:3307/vse_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: vse-hikari
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+  jackson:
+    serialization:
+      indent-output: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.company.vse: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+
+management:
+  server:
+    port: 8080
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+    enable:
+      jvm: true
+      http: true
+      hikaricp: true

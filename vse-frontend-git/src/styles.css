@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
   --primary-admin: #FF9933;
@@ -100,3 +100,5 @@ body {
 
 .vse-nav { @apply sticky top-0 z-50 py-4 px-8 flex justify-between items-center backdrop-blur-md border-b border-white/10 bg-black/20; }
 .vse-nav-link { @apply text-gray-300 hover:text-white transition-colors duration-300 font-medium; }
+
+.vse-select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #f8fafc; font-size: 14px; cursor: pointer; } .vse-select:focus { border-color: #6366f1; background: white; outline: none; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }

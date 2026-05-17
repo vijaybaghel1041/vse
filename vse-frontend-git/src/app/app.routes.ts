@@ -12,6 +12,7 @@ import { AuthLayoutComponent } from './layout/auth-layout/auth-layout.component'
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 import { AuditorComponent } from './pages/auditor/auditor.component';
+import { AuditWorkflowComponent } from './pages/audit-workflow/audit-workflow';
 
 export const routes: Routes = [
 
@@ -37,6 +38,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'annual-submission', component: VseFormComponent },
+      { path: 'member-submissions', component: AuditWorkflowComponent },
       { path: 'auditor', component: AuditorComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

@@ -1,15 +1,18 @@
 package com.company.vse.config;
 
+import com.company.vse.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.company.vse.security.JwtAuthFilter;
-
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -19,33 +22,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-             // ✅ Enable CORS inside Spring Security
-            .cors(cors -> {})
-            
-            // Disable CSRF for JWT
-            .csrf(csrf -> csrf.disable())
-
-            // No sessions (JWT only)
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-
-            // Authorization rules
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+            .cors(cors -> cors.configure(http)) // Enable CORS
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
+                .requestMatchers("/auth/**").permitAll() // Allow Login/Register
+                .requestMatchers("/api/audit/**").permitAll() // Temporarily allow for dev testing
+                .requestMatchers("/actuator/**", "/api/demo-metrics/**", "/api/cache-demo/**").permitAll() // Allow monitoring endpoints
+                .anyRequest().authenticated()
             )
-
-            // JWT filter
-            .addFilterBefore(jwtAuthFilter,
-                UsernamePasswordAuthenticationFilter.class);
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }
